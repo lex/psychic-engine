@@ -1,5 +1,16 @@
 # psychic-engine
-huffman
+
+Huffman coding
+
+#### Usage
+
+Clone, then
+
+```shell
+$ cd src
+$ make
+$ ./juuhman
+```
 
 #### License
 

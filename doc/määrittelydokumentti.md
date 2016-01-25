@@ -2,7 +2,7 @@
 
 #### Algoritmit ja tietorakenteet
 
-Toteutan **Huffman codingin**. Tarkoituksena on pakata tekstiä. Käytettävät tietorakenteet ovat prioriteettijono ja binääripuu.
+Toteutan Huffman codingin. Tarkoituksena on pakata tekstiä. Käytettävät tietorakenteet ovat prioriteettijono ja binääripuu.
 
 #### Minkä ongelman ratkaisen ja miksi
 
