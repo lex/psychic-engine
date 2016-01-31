@@ -1,2 +1,2 @@
 all:
-	clang main.c -o juuhman
+	clang main.c -O2 -Wall -Wextra -pedantic -o juuhman
