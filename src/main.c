@@ -4,14 +4,14 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-typedef struct node {
+typedef struct {
   size_t frequency;
   char character;
-} node;
+} juuHeapNode;
 
-typedef struct heap {
+typedef struct {
   size_t size;
-  node* nodes;
+  juuHeapNode* nodes;
 } juuHeap;
 
 
@@ -29,12 +29,12 @@ size_t rightChildOfIndex(size_t i) {
 
 void juuHeap_insertNode(juuHeap* heap, char c, size_t frequency) {
   if (heap->size) {
-    heap->nodes = realloc(heap->nodes, (heap->size + 1) * sizeof(node));
+    heap->nodes = realloc(heap->nodes, (heap->size + 1) * sizeof(juuHeapNode));
   } else {
-    heap->nodes = calloc(1, sizeof(node));
+    heap->nodes = calloc(1, sizeof(juuHeapNode));
   }
 
-  node n;
+  juuHeapNode n;
   n.character = c;
   n.frequency = frequency;
 
@@ -59,7 +59,7 @@ void juuHeap_inOrderTraversal(juuHeap* heap, size_t index) {
     juuHeap_inOrderTraversal(heap, leftChildOfIndex(index));
   }
 
-  node* n = &heap->nodes[index];
+  juuHeapNode* n = &heap->nodes[index];
   printf("%c: %zu\n", n->character, n->frequency);
 
   if (rightChildOfIndex(index) < heap->size) {
