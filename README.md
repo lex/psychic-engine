@@ -4,10 +4,9 @@ Huffman coding
 
 #### Usage
 
-Clone, then
-
 ```shell
-$ cd src
+$ git clone https://github.com/lex/psychic-engine.git
+$ cd psychic-engine/src
 $ make
 $ ./juuhman
 ```

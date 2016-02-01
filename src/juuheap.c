@@ -14,8 +14,10 @@ size_t rightChildOfIndex(size_t i) {
 
 void juuHeap_insertNode(juuHeap* heap, char c, size_t frequency) {
   if (heap->size > 0) {
+    // allocate more memory
     heap->nodes = realloc(heap->nodes, (heap->size + 1) * sizeof(juuHeapNode));
   } else {
+    // allocat initial memory
     heap->nodes = calloc(1, sizeof(juuHeapNode));
   }
 
@@ -25,6 +27,7 @@ void juuHeap_insertNode(juuHeap* heap, char c, size_t frequency) {
 
   size_t index = (heap->size)++;
 
+  // keep the heap in shape
   while (index && n.frequency < heap->nodes[parentOfIndex(index)].frequency) {
     heap->nodes[index] = heap->nodes[parentOfIndex(index)];
     index = parentOfIndex(index);
@@ -40,6 +43,7 @@ juuHeap* juuHeap_create() {
 }
 
 void kill_juuHeap(juuHeap* heap) {
+  // release all used memory
   free(heap->nodes);
   free(heap);
 }
