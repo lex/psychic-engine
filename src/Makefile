@@ -1,2 +1,2 @@
 all:
-	clang main.c juuheap.c -O2 -Wall -Wextra -pedantic -o juuhman
+	clang++ -std=c++11 main.cpp node.cpp juuhcode.cpp -O2 -Wall -Wextra -pedantic -o juuhman
