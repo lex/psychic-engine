@@ -11,6 +11,15 @@ $ make
 $ ./juuhman
 ```
 
+#### Testing (OS X)
+
+```shell
+$ brew install boost
+$ cd psychic-engine/tests
+$ make
+$ ./test
+```
+
 #### License
 
 Copyright (c) 2016, lex

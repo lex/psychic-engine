@@ -34,6 +34,9 @@
 # Debug files
 *.dSYM/
 
-# Compiled binary
-
+# Compiled binaries
 src/juuhman
+tests/test
+
+# Spacemacs (emacs) autosave files
+*.#*
