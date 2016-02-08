@@ -1,22 +1,21 @@
 #include "juuhcode.hpp"
 
 // initialize with the given string
-JuuhCode::JuuhCode(std::string s) {
-  this->s = s;
-  CalculateFrequencies();
-  CreateTree();
-  GenerateHuffmanCode(this->root, "");
+JuuhCode::JuuhCode(std::string s) : stringToEncode(s) {
+  calculateFrequencies();
+  createTree();
+  generateHuffmanCode(root, "");
 }
 
 // calculate character (byte) frequencies
-void JuuhCode::CalculateFrequencies() {
-  for (auto it = this->s.begin(); it < this->s.end(); ++it) {
-    ++(this->frequencies[(uint8_t)*it]);
+void JuuhCode::calculateFrequencies() {
+  for (auto it = stringToEncode.begin(); it != stringToEncode.end(); ++it) {
+    ++(frequencies[(uint8_t)*it]);
   }
 }
 
 // create the initial leaves and internal leaves
-void JuuhCode::CreateTree() {
+void JuuhCode::createTree() {
   const auto comparison = [](const Node *first, const Node *second) {
     return first->frequency > second->frequency;
   };
@@ -24,16 +23,15 @@ void JuuhCode::CreateTree() {
   std::priority_queue<Node *, std::vector<Node *>, decltype(comparison)> tree(
       comparison);
 
-  for (auto it = this->frequencies.begin(); it != this->frequencies.end();
-       ++it) {
-    auto character = it->first;
-    auto frequency = it->second;
+  // loop through "characters" and push them into the queue
+  for (uint8_t i = 0; i < UINT8_MAX; ++i) {
+    const auto frequency = frequencies[i];
 
     if (frequency == 0) {
       continue;
     }
 
-    auto node = new Node(frequency, character);
+    auto node = new Node(frequency, i);
     tree.push(node);
   }
 
@@ -49,25 +47,26 @@ void JuuhCode::CreateTree() {
     tree.push(parent);
   }
 
-  this->root = tree.top();
+  root = tree.top();
 }
 
 // recursively generate huffman coding
-void JuuhCode::GenerateHuffmanCode(Node *node, std::string code) {
+void JuuhCode::generateHuffmanCode(Node *node, std::string code) {
+  // assign a code
   if (!node->left && !node->right) {
-    this->codes[node->character] = code;
+    codes[node->character] = code;
     return;
   }
 
-  GenerateHuffmanCode(node->left, code + "0");
-  GenerateHuffmanCode(node->right, code + "1");
+  generateHuffmanCode(node->left, code + "0");
+  generateHuffmanCode(node->right, code + "1");
 }
 
 // print the coding
-void JuuhCode::Print() {
-  for (auto it = this->codes.begin(); it != this->codes.end(); ++it) {
-    auto character = it->first;
-    auto code = it->second;
+void JuuhCode::print() const {
+  for (const auto &pair : codes) {
+    auto character = pair.first;
+    auto code = pair.second;
     std::cout << "'" << character << "': " << code << std::endl;
   }
 }

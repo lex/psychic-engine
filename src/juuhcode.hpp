@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include <array>
 #include <queue>
 #include <iterator>
 #include <algorithm>
@@ -12,16 +13,16 @@
 class JuuhCode {
 public:
   JuuhCode(std::string s);
-  void Print();
+  void print() const;
 
 private:
-  void CalculateFrequencies();
-  void CreateTree();
-  void GenerateHuffmanCode(Node *node, std::string code);
+  void calculateFrequencies();
+  void createTree();
+  void generateHuffmanCode(Node *node, std::string code);
 
-  std::string s;
+  std::string stringToEncode;
   std::map<char, std::string> codes;
-  std::map<uint8_t, uint64_t> frequencies;
+  std::array<uint64_t, UINT8_MAX> frequencies = {{0}};
 
   Node *root = 0;
 };

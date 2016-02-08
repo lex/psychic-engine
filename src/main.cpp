@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
   std::cout << s << std::endl;
 
   auto j = JuuhCode(s);
-  j.Print();
+  j.print();
 
   return 0;
 }
