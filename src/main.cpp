@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 
   const std::string argument = argv[1];
 
-  auto const j = JuuhCode(s);
+  const JuuhCode j = JuuhCode(s);
 
   switch (getOptionForArgument(argument)) {
   case PRINT_CODES:
