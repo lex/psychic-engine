@@ -20,7 +20,7 @@ public:
 private:
   void calculateFrequencies();
   void createTree();
-  void generateHuffmanCode(Node *node, std::string code);
+  void generateHuffmanCode(const Node *node, const std::string &code);
   void generateEncodedString();
 
   std::string stringToEncode;

@@ -2,10 +2,15 @@
 
 // initialize with the given string
 JuuhCode::JuuhCode(const std::string s) : stringToEncode(s) {
+  std::cout << "Calculating frequencies..." << std::endl;
   calculateFrequencies();
+  std::cout << "Creating a tree..." << std::endl;
   createTree();
+  std::cout << "Generating Huffman code..." << std::endl;
   generateHuffmanCode(root, "");
+  std::cout << "Generating the encoded string..." << std::endl;
   generateEncodedString();
+  std::cout << std::endl;
 }
 
 // calculate character (byte) frequencies
@@ -54,7 +59,7 @@ void JuuhCode::createTree() {
 }
 
 // recursively generate huffman coding
-void JuuhCode::generateHuffmanCode(Node *node, std::string code) {
+void JuuhCode::generateHuffmanCode(const Node *node, const std::string &code) {
   // assign a code
   if (!node->left && !node->right) {
     codes[node->character] = code;
@@ -86,7 +91,6 @@ void JuuhCode::generateEncodedString() {
 
 // print the encoded string
 void JuuhCode::printEncodedString() const {
-
   std::cout << encodedString << std::endl;
 }
 
