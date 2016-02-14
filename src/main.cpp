@@ -11,12 +11,12 @@ int main(int argc, char *argv[]) {
   }
 
   // gather everything from stdin
-  std::string s{std::istreambuf_iterator<char>(std::cin),
+  const std::string s{std::istreambuf_iterator<char>(std::cin),
                 std::istreambuf_iterator<char>()};
 
-  std::string argument = argv[1];
+  const std::string argument = argv[1];
 
-  auto j = JuuhCode(s);
+  auto const j = JuuhCode(s);
 
   switch (getOptionForArgument(argument)) {
   case PRINT_CODES:
