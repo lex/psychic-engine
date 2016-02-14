@@ -14,11 +14,11 @@ int main(int argc, char *argv[]) {
   std::string s{std::istreambuf_iterator<char>(std::cin),
                 std::istreambuf_iterator<char>()};
 
-  std::string option = argv[1];
+  std::string argument = argv[1];
 
   auto j = JuuhCode(s);
 
-  switch (getOptionForArgument(option)) {
+  switch (getOptionForArgument(argument)) {
   case PRINT_CODES:
     j.printCodes();
     break;
