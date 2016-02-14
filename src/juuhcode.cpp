@@ -5,6 +5,7 @@ JuuhCode::JuuhCode(std::string s) : stringToEncode(s) {
   calculateFrequencies();
   createTree();
   generateHuffmanCode(root, "");
+  generateEncodedString();
 }
 
 // calculate character (byte) frequencies
@@ -23,8 +24,10 @@ void JuuhCode::createTree() {
   std::priority_queue<Node *, std::vector<Node *>, decltype(comparison)> tree(
       comparison);
 
-  // loop through "characters" and push them into the queue
-  for (uint8_t i = 0; i < UINT8_MAX; ++i) {
+  // loop through bytes ("characters") and push them into the queue
+  uint8_t i = 0;
+
+  do {
     const auto frequency = frequencies[i];
 
     if (frequency == 0) {
@@ -33,7 +36,7 @@ void JuuhCode::createTree() {
 
     auto node = new Node(frequency, i);
     tree.push(node);
-  }
+  } while (i++ != UINT8_MAX);
 
   // create internal nodes
   while (tree.size() > 1) {
@@ -62,11 +65,40 @@ void JuuhCode::generateHuffmanCode(Node *node, std::string code) {
   generateHuffmanCode(node->right, code + "1");
 }
 
-// print the coding
-void JuuhCode::print() const {
+// print the codes
+void JuuhCode::printCodes() const {
   for (const auto &pair : codes) {
     auto character = pair.first;
     auto code = pair.second;
     std::cout << "'" << character << "': " << code << std::endl;
   }
+}
+
+void JuuhCode::generateEncodedString() {
+  std::string encoded = "";
+
+  for (const char &c : stringToEncode) {
+    encoded.append(codes.at((uint8_t)c));
+  }
+
+  encodedString = encoded;
+}
+
+// print the encoded string
+void JuuhCode::printEncodedString() const {
+
+  std::cout << encodedString << std::endl;
+}
+
+void JuuhCode::printStats() const {
+  const size_t originalBytes = stringToEncode.length();
+  const size_t encodedBytes = encodedString.length() / 8;
+
+  const double percentage =
+      (static_cast<double>(encodedBytes) / static_cast<double>(originalBytes)) *
+      100;
+
+  std::cout << "Original size:\t" << originalBytes << " bytes" << std::endl;
+  std::cout << "Encoded size:\t" << encodedBytes << " bytes (" << percentage
+            << "% of original)" << std::endl;
 }

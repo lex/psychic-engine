@@ -13,14 +13,18 @@
 class JuuhCode {
 public:
   JuuhCode(std::string s);
-  void print() const;
+  void printCodes() const;
+  void printEncodedString() const;
+  void printStats() const;
 
 private:
   void calculateFrequencies();
   void createTree();
   void generateHuffmanCode(Node *node, std::string code);
+  void generateEncodedString();
 
   std::string stringToEncode;
+  std::string encodedString;
   std::map<char, std::string> codes;
   std::array<uint64_t, UINT8_MAX> frequencies = {{0}};
 
