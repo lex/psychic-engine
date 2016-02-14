@@ -1,7 +1,7 @@
 #include "juuhcode.hpp"
 
 // initialize with the given string
-JuuhCode::JuuhCode(std::string s) : stringToEncode(s) {
+JuuhCode::JuuhCode(const std::string s) : stringToEncode(s) {
   calculateFrequencies();
   createTree();
   generateHuffmanCode(root, "");
