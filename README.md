@@ -1,7 +1,11 @@
 # psychic-engine
 
 Huffman coding
-
+***
+<p align="center">
+<img src="/doc/screenshot.png">
+</p>
+***
 #### Usage
 
 ```shell

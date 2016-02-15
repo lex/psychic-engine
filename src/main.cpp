@@ -46,13 +46,12 @@ int main(int argc, char *argv[]) {
   if (argc < 2 || isatty(0)) {
     // if there's no argument(s) or we're not getting piped anything
     printUsage();
-    return 2;
+    return 1;
   }
 
   // gather everything from stdin
   const std::string s{std::istreambuf_iterator<char>(std::cin),
                       std::istreambuf_iterator<char>()};
-
   const std::string argument = argv[1];
 
   const JuuhCode j = JuuhCode(s);
@@ -69,7 +68,7 @@ int main(int argc, char *argv[]) {
     break;
   case UNDEFINED:
     printUsage();
-    return 2;
+    return 1;
   }
 
   return 0;

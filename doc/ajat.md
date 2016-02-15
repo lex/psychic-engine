@@ -15,3 +15,5 @@
 #### Viikko 4
 
 6h coodaamista
+1h koodikatseloimintia
+2h dokumentteja
