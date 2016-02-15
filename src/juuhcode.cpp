@@ -19,7 +19,7 @@ JuuhCode::JuuhCode(const std::string &s) : stringToEncode(s) {
 
 // calculate character (byte) frequencies
 void JuuhCode::calculateFrequencies() {
-  for (const auto c : stringToEncode) {
+  for (const auto &c : stringToEncode) {
     ++(frequencies[static_cast<uint8_t>(c)]);   
   }
 }
