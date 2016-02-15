@@ -1,7 +1,11 @@
 #include "juuhcode.hpp"
 
+const auto static comparison = [](const Node *first, const Node *second) {
+  return first->frequency > second->frequency;
+};
+
 // initialize with the given string
-JuuhCode::JuuhCode(const std::string s) : stringToEncode(s) {
+JuuhCode::JuuhCode(const std::string &s) : stringToEncode(s) {
   std::cout << "Calculating frequencies..." << std::endl;
   calculateFrequencies();
   std::cout << "Creating a tree..." << std::endl;
@@ -22,10 +26,6 @@ void JuuhCode::calculateFrequencies() {
 
 // create the initial leaves and internal leaves
 void JuuhCode::createTree() {
-  const auto comparison = [](const Node *first, const Node *second) {
-    return first->frequency > second->frequency;
-  };
-
   std::priority_queue<Node *, std::vector<Node *>, decltype(comparison)> tree(
       comparison);
 
@@ -83,7 +83,7 @@ void JuuhCode::generateEncodedString() {
   std::string encoded = "";
 
   for (const char &c : stringToEncode) {
-    encoded.append(codes.at((uint8_t)c));
+    encoded.append(codes.at(static_cast<uint8_t>(c)));
   }
 
   encodedString = encoded;

@@ -12,7 +12,7 @@
 
 class JuuhCode {
 public:
-  JuuhCode(const std::string s);
+  JuuhCode(const std::string &s);
   void printCodes() const;
   void printEncodedString() const;
   void printStats() const;
