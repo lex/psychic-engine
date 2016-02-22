@@ -1,13 +1,14 @@
+#pragma once
 #include <cstdint>
 
-class Node {
-public:
+struct Node {
   uint64_t frequency;
   uint8_t character;
 
-  Node *left = 0;
-  Node *right = 0;
+  Node *left;
+  Node *right;
 
-  Node(uint64_t frequency, uint8_t character);
-  Node(Node *left, Node *right);
+  Node(uint64_t f, uint8_t c) : frequency(f), character(c), left(0), right(0) {}
+  Node(Node *l, Node *r)
+      : frequency(l->frequency + r->frequency), left(l), right(r) {}
 };

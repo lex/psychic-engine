@@ -5,6 +5,7 @@
 #include <string>
 
 #include "../src/juuhcode.hpp"
+#include "../src/juuhqueue.hpp"
 
 struct cout_redirect {
   cout_redirect(std::streambuf *new_buffer)
@@ -20,17 +21,16 @@ private:
 BOOST_AUTO_TEST_CASE(TestForCorrectCodeOutput) {
   const std::string s = "fresh";
   auto juuh = JuuhCode(s);
-  const std::string expected = "'e': 001"
+  const std::string expected = "'e': 11"
                                "\n"
                                "'f': 000"
                                "\n"
                                "'h': 01"
                                "\n"
-                               "'r': 11"
+                               "'r': 001"
                                "\n"
                                "'s': 10"
                                "\n";
-
   boost::test_tools::output_test_stream output;
   {
     cout_redirect guard(output.rdbuf());
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(TestForCorrectCodeOutput) {
 BOOST_AUTO_TEST_CASE(TestForCorrectEncodedStringOutput) {
   const std::string s = "freshfreshfresh";
   auto juuh = JuuhCode(s);
-  const std::string expected = "000110011001000110011001000110011001\n";
+  const std::string expected = "000001111001000001111001000001111001\n";
 
   boost::test_tools::output_test_stream output;
   {
@@ -71,4 +71,32 @@ BOOST_AUTO_TEST_CASE(TestForCorrectEncodedStatsOutput) {
   }
 
   BOOST_CHECK(output.is_equal(expected));
+}
+
+// test that adding something to the priorityqueue increases its size 
+BOOST_AUTO_TEST_CASE(TestForCorrectQueuePushing) {
+  auto queue = JuuhQueue();
+  Node* n = new Node(128, 'a');
+  queue.push(n);
+  const size_t expectedSize = 1;
+
+  BOOST_CHECK_EQUAL(queue.size(), expectedSize);
+}
+
+BOOST_AUTO_TEST_CASE(TestForCorrectQueuePoppingSize) {
+  auto queue = JuuhQueue();
+  Node* n = new Node(128, 'a');
+  queue.push(n);
+  const size_t expectedSize = 0;
+
+  Node* r = queue.pop();
+  BOOST_CHECK_EQUAL(queue.size(), expectedSize);
+}
+
+BOOST_AUTO_TEST_CASE(TestForCorrectQueuePoppingContent) {
+  auto queue = JuuhQueue();
+  Node* n = new Node(128, 'a');
+  queue.push(n);
+  Node* r = queue.pop();
+  BOOST_CHECK_EQUAL(r, n);
 }

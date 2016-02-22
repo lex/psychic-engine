@@ -1,9 +1,5 @@
 #include "juuhcode.hpp"
 
-const auto static comparison = [](const Node *first, const Node *second) {
-  return first->frequency > second->frequency;
-};
-
 // initialize with the given string
 JuuhCode::JuuhCode(const std::string &s) : stringToEncode(s) {
   std::cout << "Calculating frequencies..." << std::endl;
@@ -20,14 +16,15 @@ JuuhCode::JuuhCode(const std::string &s) : stringToEncode(s) {
 // calculate character (byte) frequencies
 void JuuhCode::calculateFrequencies() {
   for (const auto &c : stringToEncode) {
-    ++(frequencies[static_cast<uint8_t>(c)]);   
+    ++(frequencies[static_cast<uint8_t>(c)]);
   }
 }
 
+#include "juuhqueue.hpp"
+
 // create the initial leaves and internal leaves
 void JuuhCode::createTree() {
-  std::priority_queue<Node *, std::vector<Node *>, decltype(comparison)> tree(
-      comparison);
+  JuuhQueue tree;
 
   // loop through bytes ("characters") and push them into the queue
   uint8_t i = 0;
@@ -39,19 +36,16 @@ void JuuhCode::createTree() {
       continue;
     }
 
-    auto node = new Node(frequency, i);
+    Node *node = new Node(frequency, i);
     tree.push(node);
   } while (i++ != UINT8_MAX);
 
   // create internal nodes
   while (tree.size() > 1) {
-    auto rightChild = tree.top();
-    tree.pop();
+    Node *rightChild = tree.pop();
+    Node *leftChild = tree.pop();
 
-    auto leftChild = tree.top();
-    tree.pop();
-
-    auto parent = new Node(leftChild, rightChild);
+    Node *parent = new Node(leftChild, rightChild);
     tree.push(parent);
   }
 
