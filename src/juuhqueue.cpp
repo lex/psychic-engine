@@ -60,26 +60,3 @@ void JuuhQueue::swap(const size_t first, const size_t second) {
 size_t JuuhQueue::size() const { return queueSize; }
 
 Node *JuuhQueue::top() const { return queue[firstIndex]; }
-
-#include <iostream>
-#include <sstream>
-
-void JuuhQueue::debugPrint() const {
-  std::string s = "";
-  for (Node *n : queue) {
-    if (!n)
-      continue;
-    std::ostringstream o;
-    std::ostringstream p;
-
-    o << n->character;
-    p << n->frequency;
-
-    if (o.str() == "\n") {
-      s += "'\\n' (" + p.str() + ") ,";
-    } else {
-      s += "'" + o.str() + "' (" + p.str() + ") ,";
-    }
-  }
-  std::cout << s << std::endl;
-}
