@@ -19,7 +19,6 @@ void JuuhQueue::push(Node *node) {
   }
 
   queue[i] = node;
-  debugPrint();
 }
 
 // return the last node (the node with the smallest frequency) from the queue
