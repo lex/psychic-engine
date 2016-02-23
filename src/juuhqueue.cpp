@@ -21,7 +21,8 @@ void JuuhQueue::push(Node *node) {
   queue[i] = node;
 }
 
-// return the last node (the node with the smallest frequency) from the queue
+// return the first node (the node with the smallest frequency) from the queue
+// also move the last node to the first position so we can heapify the queue easily
 Node *JuuhQueue::pop() {
   Node *top = queue[firstIndex];
   size_t lastIndex = queueSize;
