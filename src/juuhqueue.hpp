@@ -10,14 +10,11 @@ public:
   JuuhQueue();
   void push(Node *node);
   Node *pop();
-  Node *top();
-  size_t size();
+  Node *top() const;
+  size_t size() const;
 
 private:
-  void heapify(size_t index);
-  void swap(size_t first, size_t second);
-  size_t getLowestFrequency(size_t index);
-  // 1024(???) for now, gotta figure out the real size in runtime
-  std::array<Node *, 1024> queue = {{0}};
+  // at maximum there will be 256 nodes in the queue
+  std::array<Node *, UINT8_MAX> queue = {{0}};
   size_t queueSize = 0;
 };

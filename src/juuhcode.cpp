@@ -1,4 +1,5 @@
 #include "juuhcode.hpp"
+#include "juuhqueue.hpp"
 
 // initialize with the given string
 JuuhCode::JuuhCode(const std::string &s) : stringToEncode(s) {
@@ -19,8 +20,6 @@ void JuuhCode::calculateFrequencies() {
     ++(frequencies[static_cast<uint8_t>(c)]);
   }
 }
-
-#include "juuhqueue.hpp"
 
 // create the initial leaves and internal leaves
 void JuuhCode::createTree() {

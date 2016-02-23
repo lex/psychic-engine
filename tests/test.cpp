@@ -21,15 +21,15 @@ private:
 BOOST_AUTO_TEST_CASE(TestForCorrectCodeOutput) {
   const std::string s = "fresh";
   auto juuh = JuuhCode(s);
-  const std::string expected = "'e': 11"
+  const std::string expected = "'e': 00"
                                "\n"
-                               "'f': 000"
+                               "'f': 011"
                                "\n"
-                               "'h': 01"
+                               "'h': 010"
                                "\n"
-                               "'r': 001"
+                               "'r': 10"
                                "\n"
-                               "'s': 10"
+                               "'s': 11"
                                "\n";
   boost::test_tools::output_test_stream output;
   {
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(TestForCorrectCodeOutput) {
 BOOST_AUTO_TEST_CASE(TestForCorrectEncodedStringOutput) {
   const std::string s = "freshfreshfresh";
   auto juuh = JuuhCode(s);
-  const std::string expected = "000001111001000001111001000001111001\n";
+  const std::string expected = "011100011010011100011010011100011010\n";
 
   boost::test_tools::output_test_stream output;
   {
@@ -73,30 +73,50 @@ BOOST_AUTO_TEST_CASE(TestForCorrectEncodedStatsOutput) {
   BOOST_CHECK(output.is_equal(expected));
 }
 
-// test that adding something to the priorityqueue increases its size 
+// test that adding something to the priorityqueue increases its size
 BOOST_AUTO_TEST_CASE(TestForCorrectQueuePushing) {
-  auto queue = JuuhQueue();
-  Node* n = new Node(128, 'a');
-  queue.push(n);
+  JuuhQueue queue;
   const size_t expectedSize = 1;
+
+  Node *n = new Node(128, 'a');
+  queue.push(n);
 
   BOOST_CHECK_EQUAL(queue.size(), expectedSize);
 }
 
 BOOST_AUTO_TEST_CASE(TestForCorrectQueuePoppingSize) {
-  auto queue = JuuhQueue();
-  Node* n = new Node(128, 'a');
-  queue.push(n);
+  JuuhQueue queue;
   const size_t expectedSize = 0;
 
-  Node* r = queue.pop();
+  Node *n = new Node(128, 'a');
+  queue.push(n);
+
+
+  Node *r = queue.pop();
+
   BOOST_CHECK_EQUAL(queue.size(), expectedSize);
 }
 
 BOOST_AUTO_TEST_CASE(TestForCorrectQueuePoppingContent) {
-  auto queue = JuuhQueue();
-  Node* n = new Node(128, 'a');
+  JuuhQueue queue;
+
+  Node *n = new Node(128, 'a');
   queue.push(n);
-  Node* r = queue.pop();
+  Node *r = queue.pop();
+
+  BOOST_CHECK_EQUAL(r, n);
+}
+
+BOOST_AUTO_TEST_CASE(TestForCorrectQueuePoppingContentAfterInserts) {
+  JuuhQueue queue;
+
+  Node *n = new Node(128, 'a');
+  Node *nn = new Node(129, 'b');
+
+  queue.push(n);
+  queue.push(nn);
+
+  Node *r = queue.pop();
+
   BOOST_CHECK_EQUAL(r, n);
 }
