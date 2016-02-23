@@ -2,7 +2,6 @@
 
 #include "node.hpp"
 #include <cstdint>
-#include <algorithm>
 #include <array>
 
 class JuuhQueue {
@@ -14,6 +13,8 @@ public:
   size_t size() const;
 
 private:
+  const size_t firstIndex = 1;
+
   // at maximum there will be 256 nodes in the queue
   std::array<Node *, UINT8_MAX> queue = {{0}};
   size_t queueSize = 0;
