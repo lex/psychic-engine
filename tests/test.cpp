@@ -21,15 +21,15 @@ private:
 BOOST_AUTO_TEST_CASE(TestForCorrectCodeOutput) {
   const std::string s = "fresh";
   auto juuh = JuuhCode(s);
-  const std::string expected = "'e': 00"
+  const std::string expected = "'e': 11"
                                "\n"
-                               "'f': 011"
+                               "'f': 000"
                                "\n"
-                               "'h': 010"
+                               "'h': 01"
                                "\n"
-                               "'r': 10"
+                               "'r': 001"
                                "\n"
-                               "'s': 11"
+                               "'s': 10"
                                "\n";
   boost::test_tools::output_test_stream output;
   {
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(TestForCorrectCodeOutput) {
 BOOST_AUTO_TEST_CASE(TestForCorrectEncodedStringOutput) {
   const std::string s = "freshfreshfresh";
   auto juuh = JuuhCode(s);
-  const std::string expected = "011100011010011100011010011100011010\n";
+  const std::string expected = "000001111001000001111001000001111001\n";
 
   boost::test_tools::output_test_stream output;
   {
