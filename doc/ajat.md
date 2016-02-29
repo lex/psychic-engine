@@ -15,9 +15,14 @@
 #### Viikko 4
 
 - 6h coodaamista
-- 1h koodikatseloimintia
+- 1h koodikatselmointia
 - 2h dokumentteja
 
 #### Viikko 5
 
 - 7h coodaamista ja testejä
+
+#### Viikko 6
+
+- 3h coodaamista
+- 1h koodikatselmointia

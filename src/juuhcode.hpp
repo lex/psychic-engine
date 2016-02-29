@@ -1,11 +1,6 @@
 #pragma once
 #include <string>
-#include <map>
 #include <array>
-#include <queue>
-#include <iterator>
-#include <algorithm>
-#include <functional>
 #include <iostream>
 
 #include "node.hpp"
@@ -25,8 +20,10 @@ private:
 
   std::string stringToEncode;
   std::string encodedString;
-  std::map<char, std::string> codes;
-  std::array<uint64_t, UINT8_MAX> frequencies = {{0}};
+
+  // we need room for 256 values, UINT8_MAX is 255
+  std::array<std::string, UINT8_MAX + 1> codes = {{""}};
+  std::array<uint64_t, UINT8_MAX + 1> frequencies = {{0}};
 
   Node *root = 0;
 };

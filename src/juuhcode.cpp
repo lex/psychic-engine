@@ -16,7 +16,7 @@ JuuhCode::JuuhCode(const std::string &s) : stringToEncode(s) {
 
 // calculate character (byte) frequencies
 void JuuhCode::calculateFrequencies() {
-  for (const auto &c : stringToEncode) {
+  for (const char &c : stringToEncode) {
     ++(frequencies[static_cast<uint8_t>(c)]);
   }
 }
@@ -55,7 +55,8 @@ void JuuhCode::createTree() {
 void JuuhCode::generateHuffmanCode(const Node *node, const std::string &code) {
   // assign a code
   if (!node->left && !node->right) {
-    codes[node->character] = code;
+    size_t index = static_cast<size_t>(node->character);
+    codes[index] = code;
     return;
   }
 
@@ -65,9 +66,14 @@ void JuuhCode::generateHuffmanCode(const Node *node, const std::string &code) {
 
 // print the codes
 void JuuhCode::printCodes() const {
-  for (const auto &pair : codes) {
-    auto character = pair.first;
-    auto code = pair.second;
+  for (size_t i = 0; i < codes.max_size(); ++i) {
+    char character = static_cast<char>(i);
+    std::string code = codes[i];
+
+    if (code == "") {
+      continue;
+    }
+
     std::cout << "'" << character << "': " << code << std::endl;
   }
 }
@@ -76,7 +82,8 @@ void JuuhCode::generateEncodedString() {
   std::string encoded = "";
 
   for (const char &c : stringToEncode) {
-    encoded.append(codes.at(static_cast<uint8_t>(c)));
+    uint8_t i = static_cast<uint8_t>(c);
+    encoded.append(codes[i]);
   }
 
   encodedString = encoded;
@@ -95,7 +102,8 @@ void JuuhCode::printStats() const {
       (static_cast<double>(encodedBytes) / static_cast<double>(originalBytes)) *
       100;
 
-  std::cout << "Original size:\t" << originalBytes << " bytes" << std::endl;
-  std::cout << "Encoded size:\t" << encodedBytes << " bytes (" << percentage
+  std::cout << "Original size:\t" << originalBytes << " bytes"
+            << "\n"
+            << "Encoded size:\t" << encodedBytes << " bytes (" << percentage
             << "% of original)" << std::endl;
 }

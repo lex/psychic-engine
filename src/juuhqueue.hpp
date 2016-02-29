@@ -19,7 +19,8 @@ private:
   void debugPrint() const;
 
   // at maximum there will be 256 nodes in the queue
-  // we start indexing from 1, so we need one more spot
-  std::array<Node *, UINT8_MAX + 1> queue = {{0}};
+  // we start indexing from 1, so we need one (two) more spot
+  // UINT8_MAX is 255
+  std::array<Node *, UINT8_MAX + 2> queue = {{0}};
   size_t queueSize = 0;
 };
