@@ -2,7 +2,7 @@
 #include <cstdint>
 
 struct Node {
-  uint64_t frequency;
+  const uint64_t frequency;
   uint8_t character;
 
   const Node *left;
