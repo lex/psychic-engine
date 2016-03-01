@@ -24,5 +24,5 @@
 
 #### Viikko 6
 
-- 3h coodaamista
+- 8h coodaamista
 - 1h koodikatselmointia
