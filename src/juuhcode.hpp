@@ -11,7 +11,6 @@
 class JuuhCode {
 public:
   JuuhCode();
-  void printCodes(const std::string &filePath) const;
   void encodeFile(const std::string &input, const std::string &output);
   void decodeFile(const std::string &input, const std::string &output);
 

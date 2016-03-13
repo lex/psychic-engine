@@ -2,7 +2,7 @@
 #include <iostream>
 #include "juuhcode.hpp"
 
-enum option { UNDEFINED, PRINT_CODES, ENCODE, DECODE };
+enum option { UNDEFINED, ENCODE, DECODE };
 
 void printUsage() {
   std::cout << "Examples of use:"
@@ -27,10 +27,6 @@ void printUsage() {
 }
 
 option getOptionForArgument(const std::string &argument) {
-  if (argument == "--show-codes") {
-    return PRINT_CODES;
-  }
-
   if (argument == "--encode") {
     return ENCODE;
   }
@@ -43,16 +39,11 @@ option getOptionForArgument(const std::string &argument) {
 }
 
 int main(int argc, char *argv[]) {
-  if (argc < 4) {
-    // if there's no argument(s) or we're not getting piped anything
+  if (argc < 5) {
+    // if there are not enough arguments
     printUsage();
     return 1;
   }
-
-  // gather everything from stdin
-  // const std::string ss{std::istreambuf_iterator<char>(std::cin),
-  //                     std::istreambuf_iterator<char>()};
-  // const std::string s = ss.substr(0, ss.size() - 1);
 
   const std::string option = argv[1];
   const std::string inputFile = argv[2];
@@ -68,9 +59,6 @@ int main(int argc, char *argv[]) {
   JuuhCode j = JuuhCode();
 
   switch (getOptionForArgument(option)) {
-  case PRINT_CODES:
-    j.printCodes(inputFile);
-    break;
   case ENCODE:
     j.encodeFile(inputFile, outputFile);
     break;

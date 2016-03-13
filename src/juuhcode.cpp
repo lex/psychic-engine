@@ -21,8 +21,7 @@ void JuuhCode::encodeFile(const std::string &input, const std::string &output) {
 
   inputFile.close();
 
-  std::string s = data;
-  stringToEncode = s;
+  stringToEncode = data;
   delete[] data;
 
   std::cout << "Calculating frequencies..." << std::endl;
@@ -88,7 +87,7 @@ void JuuhCode::decodeFile(const std::string &input, const std::string &output) {
 
   delete[] data;
 
-  Node *juuh = readNode();
+  Node *decodedRoot = readNode();
 
   std::string s = "";
 
@@ -98,11 +97,16 @@ void JuuhCode::decodeFile(const std::string &input, const std::string &output) {
       break;
     }
 
-    char c = getCharacter(juuh);
+    char c = getCharacter(decodedRoot);
     s += c;
   }
 
-  std::cout << s << std::endl;
+  std::ofstream outputFile;
+  outputFile.open(output, std::ofstream::out);
+
+  outputFile << s;
+
+  outputFile.close();
 }
 
 // calculate character (byte) frequencies
@@ -160,26 +164,6 @@ void JuuhCode::generateHuffmanCode(const Node *node,
 
   generateHuffmanCode(node->left, left);
   generateHuffmanCode(node->right, right);
-}
-
-// print the codes
-void JuuhCode::printCodes(const std::string &inputFile) const {
-  for (size_t i = 0; i < codes.max_size(); ++i) {
-    char character = static_cast<char>(i);
-    std::vector<bool> code = codes[i];
-
-    if (code.empty()) {
-      continue;
-    }
-
-    std::cout << "'" << character << "': ";
-
-    for (const bool &b : code) {
-      std::cout << b;
-    }
-
-    std::cout << std::endl;
-  }
 }
 
 // encode the codes and the string into bits for packaging into bytes
