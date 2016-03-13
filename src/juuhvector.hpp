@@ -4,21 +4,24 @@
 
 template <class T> class JuuhVector {
 public:
-  JuuhVector() { elements = new T[currentMaximumSize]; }
+  JuuhVector() { elements = new T[currentSize]; }
 
+  // copy some other juuhvector's contents to the new one
   JuuhVector(const JuuhVector &other) {
-    elements = new T[other.currentMaximumSize];
+    elements = new T[other.currentSize];
 
     std::memcpy(elements, other.elements, other.currentIndex * sizeof(T));
 
     currentIndex = other.currentIndex;
-    currentMaximumSize = other.currentMaximumSize;
+    currentSize = other.currentSize;
   }
 
   ~JuuhVector() {}
 
+  // push an item to the vector
   void push_back(T const &item) {
-    if (currentIndex == currentMaximumSize) {
+    // resize (double the size) if we're out of space
+    if (currentIndex == currentSize) {
       resize();
     }
 
@@ -32,12 +35,14 @@ public:
 private:
   T *elements;
   size_t currentIndex = 0;
-  size_t currentMaximumSize = 4;
+  size_t currentSize = 4;
 
   void resize() {
-    currentMaximumSize <<= 1;
+    // double the size
+    currentSize <<= 1;
 
-    T* temp = new T[currentMaximumSize];
+    // create the new array and copy the old contents into it
+    T *temp = new T[currentSize];
 
     std::memcpy(temp, elements, (currentIndex) * sizeof(T));
 

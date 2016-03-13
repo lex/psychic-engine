@@ -1,6 +1,4 @@
 #include "juuhcode.hpp"
-#include "juuhqueue.hpp"
-#include "juuhvector.hpp"
 
 JuuhCode::JuuhCode() {}
 

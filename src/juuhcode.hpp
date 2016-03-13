@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "node.hpp"
+#include "juuhqueue.hpp"
 #include "juuhvector.hpp"
 
 class JuuhCode {
