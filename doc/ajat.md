@@ -30,3 +30,4 @@
 #### Viikko 7
 
 - ainakin 24 tuntia coodaamista
+- 1h tekstejä

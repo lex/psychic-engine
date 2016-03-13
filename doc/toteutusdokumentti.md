@@ -1,5 +1,10 @@
 #### Yleisrakenne
 
+Ohjelmaa käsketään komentoriviltä. Erilaisia komentoja on enää vain kaksi: pakkaaminen ja purkaminen.
+
+Pakatessa ohjelma saa sisään lähdetiedoston sijainnin ja ulos tulevan tiedoston sijainnin. Pakkaukseen käytetään Huffmanin algoritmiä, ja [tallennusalgoritmia](http://stackoverflow.com/a/759766).
+
+Purkamiseen käytetään samasta vastauksesta löytyvää algoritmia. Työhön valitussa kielessä ei ollut mitään vastauksen kielen kaltaista helppoa tapaa käsitellä bittejä tässä tarkoituksessa, joten omaan toteutukseen kului melko paljon aikaa.
 
 #### Aika- ja tilavaativuudet
 
@@ -62,8 +67,9 @@ Koodatun merkkijonon generointi O(n).
 
 #### Puutteet
 
-- Koodattua tekstiä ei voi ainakaan vielä muuttaa takaisin luettavaan muotoon.
-- Ehkä liian vähän testejä.
+- Suuret (tai ainakaan erittäin suuret) tiedostot eivät pakkaudu.
+- Ohjelma ei ota virhetilanteita huomioon erityisen hyvin.
+- Ohjelma saattaa varata huomattavan määrän muistia.
 
 #### Lähteet
 

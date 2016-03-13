@@ -12,19 +12,20 @@ Huffman coding
 $ git clone https://github.com/lex/psychic-engine.git
 $ cd psychic-engine/src
 $ make
-$ ./juuhman --print-codes < main.cpp
-$ ./juuhman --print-stats < test.txt
-$ ./juuhman --print-encoded < test.txt
+$ echo test.txt
+fresh beer enjoyment 🍺🍺🍺
+$ ./juuhman --encode test.txt -o encoded
+$ ./juuhman --decode encoded -o decoded.txt
+$ echo decoded.txt
+fresh beer enjoyment 🍺🍺🍺
 ```
 
 #### Examples of use:
-	juuhman [option] < test.txt 
-	head -n 50 /dev/urandom | juuhman [option]
+	juuhman [option] [input file] -o [output file] 
 
 #### Options:
-	--print-codes
-	--print-encoded
-	--print-stats
+	--encode
+	--decode
 
 #### Testing (OS X)
 
