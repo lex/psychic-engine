@@ -118,7 +118,7 @@ void JuuhCode::decodeFile(const std::string &input, const std::string &output) {
   }
 
   // remove the last byte because of some bug in saving or loading the data
-  s = s.substr(0, s.size() - 1);
+  // s = s.substr(0, s.size() - 1);
 
   // write the output
   std::ofstream outputFile;

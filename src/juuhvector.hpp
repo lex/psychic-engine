@@ -1,25 +1,29 @@
 #pragma once
 #include <cstdint>
-
-static const size_t MAXIMUM_SIZE = 65536;
+#include <cstring>
 
 template <class T> class JuuhVector {
 public:
-  JuuhVector() { elements = new T[MAXIMUM_SIZE]; }
+  JuuhVector() { elements = new T[currentMaximumSize]; }
 
   JuuhVector(const JuuhVector &other) {
-    elements = new T[MAXIMUM_SIZE];
+    elements = new T[other.currentMaximumSize];
 
-    for (size_t i = 0; i < other.size(); ++i) {
-      elements[i] = other[i];
-    }
+    std::memcpy(elements, other.elements, other.currentIndex * sizeof(T));
 
     currentIndex = other.currentIndex;
+    currentMaximumSize = other.currentMaximumSize;
   }
 
   ~JuuhVector() {}
 
-  void push_back(T const &item) { elements[currentIndex++] = item; }
+  void push_back(T const &item) {
+    if (currentIndex == currentMaximumSize) {
+      resize();
+    }
+
+    elements[currentIndex++] = item;
+  }
 
   size_t size() const { return currentIndex; }
 
@@ -28,4 +32,16 @@ public:
 private:
   T *elements;
   size_t currentIndex = 0;
+  size_t currentMaximumSize = 4;
+
+  void resize() {
+    currentMaximumSize <<= 1;
+
+    T* temp = new T[currentMaximumSize];
+
+    std::memcpy(temp, elements, (currentIndex) * sizeof(T));
+
+    delete[] elements;
+    elements = temp;
+  }
 };

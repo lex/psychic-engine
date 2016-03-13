@@ -26,3 +26,7 @@
 
 - 8h coodaamista
 - 1h koodikatselmointia
+
+#### Viikko 7
+
+- ainakin 24 tuntia coodaamista
