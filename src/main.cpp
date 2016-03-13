@@ -2,7 +2,7 @@
 #include <iostream>
 #include "juuhcode.hpp"
 
-enum option { UNDEFINED, PRINT_CODES, PRINT_ENCODED, PRINT_STATS, PRINT_RAW, DECODE };
+enum option { UNDEFINED, PRINT_CODES, ENCODE, DECODE };
 
 void printUsage() {
   std::cout << "Examples of use:"
@@ -27,20 +27,12 @@ void printUsage() {
 }
 
 option getOptionForArgument(const std::string &argument) {
-  if (argument == "--print-codes") {
+  if (argument == "--show-codes") {
     return PRINT_CODES;
   }
 
-  if (argument == "--print-encoded") {
-    return PRINT_ENCODED;
-  }
-
-  if (argument == "--print-stats") {
-    return PRINT_STATS;
-  }
-
-  if (argument == "--print-raw") {
-    return PRINT_RAW;
+  if (argument == "--encode") {
+    return ENCODE;
   }
 
   if (argument == "--decode") {
@@ -51,36 +43,39 @@ option getOptionForArgument(const std::string &argument) {
 }
 
 int main(int argc, char *argv[]) {
-  if (argc < 2 || isatty(0)) {
+  if (argc < 4) {
     // if there's no argument(s) or we're not getting piped anything
     printUsage();
     return 1;
   }
 
   // gather everything from stdin
-  const std::string ss{std::istreambuf_iterator<char>(std::cin),
-                      std::istreambuf_iterator<char>()};
-  const std::string s = ss.substr(0, ss.size() - 1);
+  // const std::string ss{std::istreambuf_iterator<char>(std::cin),
+  //                     std::istreambuf_iterator<char>()};
+  // const std::string s = ss.substr(0, ss.size() - 1);
 
-  const std::string argument = argv[1];
+  const std::string option = argv[1];
+  const std::string inputFile = argv[2];
+  const std::string outputArgument = argv[3];
+  const std::string outputFile = argv[4];
 
-  JuuhCode j = JuuhCode(s);
+  // argv[3] has to be -o
+  if (outputArgument != "-o") {
+    printUsage();
+    return 1;
+  }
 
-  switch (getOptionForArgument(argument)) {
+  JuuhCode j = JuuhCode();
+
+  switch (getOptionForArgument(option)) {
   case PRINT_CODES:
-    j.printCodes();
+    j.printCodes(inputFile);
     break;
-  case PRINT_ENCODED:
-    j.printEncodedString();
-    break;
-  case PRINT_STATS:
-    j.printStats();
-    break;
-  case PRINT_RAW:
-    j.printBytes();
+  case ENCODE:
+    j.encodeFile(inputFile, outputFile);
     break;
   case DECODE:
-    j.decode();
+    j.decodeFile(inputFile, outputFile);
     break;
   case UNDEFINED:
     printUsage();

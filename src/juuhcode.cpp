@@ -1,19 +1,38 @@
 #include "juuhcode.hpp"
 #include "juuhqueue.hpp"
-#include <fstream>
 
-// initialize with the given string
-JuuhCode::JuuhCode(const std::string &s) : stringToEncode(s) {
-  // std::cout << "Calculating frequencies..." << std::endl;
+JuuhCode::JuuhCode() {}
+
+void JuuhCode::encodeFile(const std::string &input, const std::string &output) {
+  std::streampos size;
+  char *data;
+  std::ifstream inputFile(input,
+                          std::ios::binary | std::ios::in | std::ios::ate);
+
+  if (!inputFile.is_open()) {
+    std::cout << "failed to open" << std::endl;
+    return;
+  }
+
+  size = inputFile.tellg();
+  data = new char[size];
+  inputFile.seekg(0, std::ios::beg);
+  inputFile.read(data, size);
+
+  inputFile.close();
+
+  std::string s = data;
+  stringToEncode = s;
+
+  std::cout << "Calculating frequencies..." << std::endl;
   calculateFrequencies();
-  // std::cout << "Creating a tree..." << std::endl;
+
+  std::cout << "Creating a tree..." << std::endl;
   createTree();
-  // std::cout << "Generating Huffman code..." << std::endl;
+
+  std::cout << "Generating Huffman code..." << std::endl;
   std::vector<bool> v;
   generateHuffmanCode(root, v);
-  // std::cout << "Generating the encoded string..." << std::endl;
-  generateEncodedString();
-  // std::cout << std::endl;
 
   std::vector<bool> b;
   encode(root, b);
@@ -22,6 +41,66 @@ JuuhCode::JuuhCode(const std::string &s) : stringToEncode(s) {
   appendEncodedBits();
 
   bitsToBytes();
+
+  std::ofstream outputFile;
+  outputFile.open(output, std::ofstream::out);
+
+  for (const uint8_t &byte : bytes) {
+    outputFile << byte;
+  }
+
+  outputFile.close();
+
+  delete[] data;
+}
+
+void JuuhCode::decodeFile(const std::string &input, const std::string &output) {
+  std::streampos size;
+  char *data;
+  std::ifstream file(input, std::ios::binary | std::ios::in | std::ios::ate);
+
+  if (file.is_open()) {
+    size = file.tellg();
+    data = new char[size];
+    file.seekg(0, std::ios::beg);
+    file.read(data, size);
+    file.close();
+
+    size_t fileSize = static_cast<size_t>(size);
+
+    // convert bytes to bits
+    for (size_t k = 0; k < fileSize; ++k) {
+
+      char c = data[k];
+
+      uint8_t byte = static_cast<uint8_t>(c);
+
+      size_t shiftCount = 7;
+
+      do {
+        bool bit = ((byte >> shiftCount) & 1);
+        bits.push_back(bit);
+      } while (shiftCount-- != 0);
+    }
+
+    delete[] data;
+  }
+
+  Node *juuh = readNode();
+
+  std::string s = "";
+
+  while (true) {
+    // in case we hit the end
+    if (decodingIndex >= bits.size()) {
+      break;
+    }
+
+    char c = getCharacter(juuh);
+    s += c;
+  }
+
+  std::cout << s << std::endl;
 }
 
 // calculate character (byte) frequencies
@@ -82,7 +161,7 @@ void JuuhCode::generateHuffmanCode(const Node *node,
 }
 
 // print the codes
-void JuuhCode::printCodes() const {
+void JuuhCode::printCodes(const std::string &inputFile) const {
   for (size_t i = 0; i < codes.max_size(); ++i) {
     char character = static_cast<char>(i);
     std::vector<bool> code = codes[i];
@@ -99,26 +178,6 @@ void JuuhCode::printCodes() const {
 
     std::cout << std::endl;
   }
-}
-
-void JuuhCode::generateEncodedString() {
-  std::string encoded = "";
-
-  for (const char &c : stringToEncode) {
-    uint8_t i = static_cast<uint8_t>(c);
-    auto code = codes[i];
-
-    for (const bool &b : code) {
-      encoded += b ? "1" : "0";
-    }
-  }
-
-  encodedString = encoded;
-}
-
-// print the encoded string
-void JuuhCode::printEncodedString() const {
-  std::cout << encodedString << std::endl;
 }
 
 // encode the codes and the string into bits for packaging into bytes
@@ -149,9 +208,6 @@ void JuuhCode::encode(const Node *node, std::vector<bool> &v) {
 
 // convert bits to bytes for output purposes
 void JuuhCode::bitsToBytes() {
-  std::ofstream myfile;
-  myfile.open("enc.txt");
-
   for (auto it = bits.begin(); it != bits.end();) {
     uint8_t byte = 0;
 
@@ -166,90 +222,12 @@ void JuuhCode::bitsToBytes() {
       }
     }
 
-    myfile << byte;
     bytes.push_back(byte);
-  }
-
-  myfile.close();
-}
-
-void JuuhCode::printBytes() const {
-  for (const uint8_t &u : bytes) {
-    std::cout << u;
-  }
-
-  std::cout << std::endl;
-}
-
-void JuuhCode::decode() {
-  bits.clear();
-  const std::string in = "rawtest.txt";
-
-  std::streampos size;
-  char *memblock;
-  std::ifstream file(in, std::ios::binary | std::ios::in | std::ios::ate);
-
-  if (file.is_open()) {
-    size = file.tellg();
-    memblock = new char[size];
-    file.seekg(0, std::ios::beg);
-    file.read(memblock, size);
-    file.close();
-
-    size_t fileSize = static_cast<size_t>(size);
-    std::cout << fileSize << std::endl;
-    for (size_t k = 0; k < fileSize; ++k) {
-      // std::cout << "getting char" << std::endl;
-
-      char c = memblock[k];
-
-      uint8_t j = static_cast<uint8_t>(c);
-      // printf("'%c' %x\n", j, j);
-
-      size_t i = 7;
-
-      size_t gg = 0;
-
-      do {
-        bool value = ((j >> i) & 1);
-        std::cout << value;
-        if (++gg == 4) {
-          std::cout << " ";
-          gg = 0;
-        }
-        bits.push_back(value);
-      } while (i-- != 0);
-
-      std::cout << std::endl;
-    }
-    delete[] memblock;
-  }
-  std::cout << "juuh mitä vittua" << std::endl;
-
-  Node *juuh = readNode();
-  printTree(juuh);
-
-  std::string s = "";
-
-  for (size_t juuh = decodeIndex; juuh < bits.size(); ++juuh) {
-    std::cout << bits[juuh];
-  }
-
-  std::cout << std::endl;
-  while (true) {
-    if (decodeIndex >= bits.size()) {
-      break;
-    }
-
-    char c = getCharacter(juuh);
-    s += c;
-    std::cout << s << std::endl;
   }
 }
 
 void JuuhCode::appendEncodedBits() {
   for (const char &c : stringToEncode) {
-    // printf("%c: %x: \t", c, c);
     uint8_t i = static_cast<uint8_t>(c);
     auto code = codes[i];
 
@@ -259,11 +237,7 @@ void JuuhCode::appendEncodedBits() {
   }
 }
 
-bool JuuhCode::getBit() {
-  // std::cout << "current index:\t" << decodeIndex << "bits size:\t"
-  //           << bits.size() << std::endl;
-  return bits[decodeIndex++];
-}
+bool JuuhCode::getBit() { return bits[decodingIndex++]; }
 
 uint8_t JuuhCode::getByte() {
   uint8_t byte = 0;
@@ -291,30 +265,6 @@ Node *JuuhCode::readNode() {
   return new Node(left, right);
 }
 
-void JuuhCode::printTree(const Node *n) {
-  if (!n) {
-    return;
-  }
-
-  if (n->left) {
-    printTree(n->left);
-  }
-
-  if (n->right) {
-    printTree(n->right);
-  }
-
-  ++nodeCount;
-
-  if (!n->left) {
-    // std::cout << n->character << std::endl;
-    // printf("%c - %x\n", n->character, n->character);
-    ++leafCount;
-  }
-}
-
-void JuuhCode::printDecoded() {}
-
 char JuuhCode::getCharacter(const Node *n) {
   if (!n->left && !n->right) {
     // it's a leaf, get the character
@@ -326,18 +276,4 @@ char JuuhCode::getCharacter(const Node *n) {
     // bit is 0, go left
     return getCharacter(n->left);
   }
-}
-
-void JuuhCode::printStats() const {
-  const size_t originalBytes = stringToEncode.length();
-  const size_t encodedBytes = encodedString.length() / 8;
-
-  const double percentage =
-      (static_cast<double>(encodedBytes) / static_cast<double>(originalBytes)) *
-      100;
-
-  std::cout << "Original size:\t" << originalBytes << " bytes"
-            << "\n"
-            << "Encoded size:\t" << encodedBytes << " bytes (" << percentage
-            << "% of original)" << std::endl;
 }
