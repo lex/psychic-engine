@@ -12,11 +12,11 @@ Huffman coding
 $ git clone https://github.com/lex/psychic-engine.git
 $ cd psychic-engine/src
 $ make
-$ echo test.txt
+$ cat test.txt
 fresh beer enjoyment 🍺🍺🍺
 $ ./juuhman --encode test.txt -o encoded
 $ ./juuhman --decode encoded -o decoded.txt
-$ echo decoded.txt
+$ cat decoded.txt
 fresh beer enjoyment 🍺🍺🍺
 ```
 
