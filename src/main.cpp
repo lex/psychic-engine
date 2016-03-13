@@ -2,7 +2,7 @@
 #include <iostream>
 #include "juuhcode.hpp"
 
-enum option { UNDEFINED, PRINT_CODES, PRINT_ENCODED, PRINT_STATS, PRINT_RAW };
+enum option { UNDEFINED, PRINT_CODES, PRINT_ENCODED, PRINT_STATS, PRINT_RAW, DECODE };
 
 void printUsage() {
   std::cout << "Examples of use:"
@@ -43,6 +43,10 @@ option getOptionForArgument(const std::string &argument) {
     return PRINT_RAW;
   }
 
+  if (argument == "--decode") {
+    return DECODE;
+  }
+
   return UNDEFINED;
 }
 
@@ -54,12 +58,13 @@ int main(int argc, char *argv[]) {
   }
 
   // gather everything from stdin
-  const std::string s{std::istreambuf_iterator<char>(std::cin),
+  const std::string ss{std::istreambuf_iterator<char>(std::cin),
                       std::istreambuf_iterator<char>()};
+  const std::string s = ss.substr(0, ss.size() - 1);
 
   const std::string argument = argv[1];
 
-  const JuuhCode j = JuuhCode(s);
+  JuuhCode j = JuuhCode(s);
 
   switch (getOptionForArgument(argument)) {
   case PRINT_CODES:
@@ -73,6 +78,9 @@ int main(int argc, char *argv[]) {
     break;
   case PRINT_RAW:
     j.printBytes();
+    break;
+  case DECODE:
+    j.decode();
     break;
   case UNDEFINED:
     printUsage();

@@ -23,9 +23,20 @@ private:
   void generateEncodedString();
   void encode(const Node *node, std::vector<bool> &v);
   void bitsToBytes();
+  Node* readNode();
+  void printTree(const Node* n);
+  bool getBit();
+  uint8_t getByte();
+  void printDecoded();
+  char getCharacter(const Node* n);
+  void appendEncodedBits();
+
+  size_t decodeIndex = 0;
 
   std::string stringToEncode;
   std::string encodedString;
+  size_t nodeCount = 0;
+  size_t leafCount = 0;
 
   // we need room for 256 values, UINT8_MAX is 255
   std::array<std::vector<bool>, UINT8_MAX + 1> codes;

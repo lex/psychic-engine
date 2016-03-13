@@ -1,5 +1,6 @@
 #include "juuhcode.hpp"
 #include "juuhqueue.hpp"
+#include <fstream>
 
 // initialize with the given string
 JuuhCode::JuuhCode(const std::string &s) : stringToEncode(s) {
@@ -18,10 +19,7 @@ JuuhCode::JuuhCode(const std::string &s) : stringToEncode(s) {
   encode(root, b);
   bits = b;
 
-  // for (const auto &bb : b) {
-  //   std::cout << bb;
-  // }
-  // std::cout << std::endl;
+  appendEncodedBits();
 
   bitsToBytes();
 }
@@ -151,6 +149,9 @@ void JuuhCode::encode(const Node *node, std::vector<bool> &v) {
 
 // convert bits to bytes for output purposes
 void JuuhCode::bitsToBytes() {
+  std::ofstream myfile;
+  myfile.open("enc.txt");
+
   for (auto it = bits.begin(); it != bits.end();) {
     uint8_t byte = 0;
 
@@ -159,13 +160,17 @@ void JuuhCode::bitsToBytes() {
       byte |= (*it & 1) << (7 - i);
       ++it;
 
+      // do we need to shift more?
       if (it == bits.end()) {
         break;
       }
     }
 
+    myfile << byte;
     bytes.push_back(byte);
   }
+
+  myfile.close();
 }
 
 void JuuhCode::printBytes() const {
@@ -176,7 +181,152 @@ void JuuhCode::printBytes() const {
   std::cout << std::endl;
 }
 
-void JuuhCode::decode() {}
+void JuuhCode::decode() {
+  bits.clear();
+  const std::string in = "rawtest.txt";
+
+  std::streampos size;
+  char *memblock;
+  std::ifstream file(in, std::ios::binary | std::ios::in | std::ios::ate);
+
+  if (file.is_open()) {
+    size = file.tellg();
+    memblock = new char[size];
+    file.seekg(0, std::ios::beg);
+    file.read(memblock, size);
+    file.close();
+
+    size_t fileSize = static_cast<size_t>(size);
+    std::cout << fileSize << std::endl;
+    for (size_t k = 0; k < fileSize; ++k) {
+      // std::cout << "getting char" << std::endl;
+
+      char c = memblock[k];
+
+      uint8_t j = static_cast<uint8_t>(c);
+      // printf("'%c' %x\n", j, j);
+
+      size_t i = 7;
+
+      size_t gg = 0;
+
+      do {
+        bool value = ((j >> i) & 1);
+        std::cout << value;
+        if (++gg == 4) {
+          std::cout << " ";
+          gg = 0;
+        }
+        bits.push_back(value);
+      } while (i-- != 0);
+
+      std::cout << std::endl;
+    }
+    delete[] memblock;
+  }
+  std::cout << "juuh mitä vittua" << std::endl;
+
+  Node *juuh = readNode();
+  printTree(juuh);
+
+  std::string s = "";
+
+  for (size_t juuh = decodeIndex; juuh < bits.size(); ++juuh) {
+    std::cout << bits[juuh];
+  }
+
+  std::cout << std::endl;
+  while (true) {
+    if (decodeIndex >= bits.size()) {
+      break;
+    }
+
+    char c = getCharacter(juuh);
+    s += c;
+    std::cout << s << std::endl;
+  }
+}
+
+void JuuhCode::appendEncodedBits() {
+  for (const char &c : stringToEncode) {
+    // printf("%c: %x: \t", c, c);
+    uint8_t i = static_cast<uint8_t>(c);
+    auto code = codes[i];
+
+    for (const bool &b : code) {
+      bits.push_back(b);
+    }
+  }
+}
+
+bool JuuhCode::getBit() {
+  // std::cout << "current index:\t" << decodeIndex << "bits size:\t"
+  //           << bits.size() << std::endl;
+  return bits[decodeIndex++];
+}
+
+uint8_t JuuhCode::getByte() {
+  uint8_t byte = 0;
+
+  for (size_t i = 0; i < 8; ++i) {
+    bool bit = getBit();
+    byte |= bit;
+
+    if (i != 7) {
+      byte <<= 1;
+    }
+  }
+
+  return byte;
+}
+
+Node *JuuhCode::readNode() {
+  if (getBit()) {
+    return new Node(0, getByte());
+  }
+
+  Node *left = readNode();
+  Node *right = readNode();
+
+  return new Node(left, right);
+}
+
+void JuuhCode::printTree(const Node *n) {
+  if (!n) {
+    return;
+  }
+
+  if (n->left) {
+    printTree(n->left);
+  }
+
+  if (n->right) {
+    printTree(n->right);
+  }
+
+  ++nodeCount;
+
+  if (!n->left) {
+    // std::cout << n->character << std::endl;
+    // printf("%c - %x\n", n->character, n->character);
+    ++leafCount;
+  }
+}
+
+void JuuhCode::printDecoded() {}
+
+char JuuhCode::getCharacter(const Node *n) {
+  if (!n->left && !n->right) {
+    // it's a leaf, get the character
+    return n->character;
+  } else if (getBit()) {
+    // bit is 1, go right
+    return getCharacter(n->right);
+  } else {
+    // bit is 0, go left
+    return getCharacter(n->left);
+  }
+}
 
 void JuuhCode::printStats() const {
   const size_t originalBytes = stringToEncode.length();
