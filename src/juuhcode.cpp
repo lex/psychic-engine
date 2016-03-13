@@ -4,6 +4,7 @@
 JuuhCode::JuuhCode() {}
 
 void JuuhCode::encodeFile(const std::string &input, const std::string &output) {
+  // read the input file's contents
   std::streampos size;
   char *data;
   std::ifstream inputFile(input,
@@ -24,24 +25,31 @@ void JuuhCode::encodeFile(const std::string &input, const std::string &output) {
   stringToEncode = data;
   delete[] data;
 
+  // calculate byte frequencies
   std::cout << "Calculating frequencies..." << std::endl;
   calculateFrequencies();
 
+  // create the huffman tree
   std::cout << "Creating a tree..." << std::endl;
   createTree();
 
+  // create the huffman code from that tree
   std::cout << "Generating Huffman code..." << std::endl;
   std::vector<bool> v;
   generateHuffmanCode(root, v);
 
+  // encode the tree data as in http://stackoverflow.com/questions/759707/efficient-way-of-storing-huffman-tree
   std::vector<bool> b;
   encode(root, b);
   bits = b;
 
+  // append the encoded string itself
   appendEncodedBits();
 
+  // convert bits to bytes for saving
   bitsToBytes();
 
+  // write the output
   std::ofstream outputFile;
   outputFile.open(output, std::ofstream::out);
 
@@ -53,6 +61,7 @@ void JuuhCode::encodeFile(const std::string &input, const std::string &output) {
 }
 
 void JuuhCode::decodeFile(const std::string &input, const std::string &output) {
+  // read file contents
   std::streampos size;
   char *data;
   std::ifstream file(input, std::ios::binary | std::ios::in | std::ios::ate);
@@ -87,10 +96,12 @@ void JuuhCode::decodeFile(const std::string &input, const std::string &output) {
 
   delete[] data;
 
+  // rebuild the tree
   Node *decodedRoot = readNode();
 
   std::string s = "";
 
+  // decode the encoded data with the rebuilt tree
   while (true) {
     // in case we hit the end
     if (decodingIndex >= bits.size()) {
@@ -101,6 +112,10 @@ void JuuhCode::decodeFile(const std::string &input, const std::string &output) {
     s += c;
   }
 
+  // remove the last byte because of some bug in saving or loading the data
+  s = s.substr(0, s.size() - 1);
+
+  // write the output
   std::ofstream outputFile;
   outputFile.open(output, std::ofstream::out);
 
