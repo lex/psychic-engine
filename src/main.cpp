@@ -8,22 +8,20 @@ void printUsage() {
   std::cout << "Examples of use:"
             << "\n"
             << "\t"
-            << "juuhman [option] < input_file"
+            << "juuhman --encode test.txt -o encoded.txt"
             << "\n"
             << "\t"
-            << "head -n 50 /dev/urandom | juuhman [option]"
+            << "juuhman --decode encoded.txt -o decoded.txt"
             << "\n"
             << "\n"
             << "Options:"
             << "\n"
             << "\t"
-            << "--print-codes"
+            << "--encode"
             << "\n"
             << "\t"
-            << "--print-encoded"
-            << "\n"
-            << "\t"
-            << "--print-stats" << std::endl;
+            << "--decode"
+            << std::endl;
 }
 
 option getOptionForArgument(const std::string &argument) {
