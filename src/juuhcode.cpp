@@ -23,6 +23,7 @@ void JuuhCode::encodeFile(const std::string &input, const std::string &output) {
 
   std::string s = data;
   stringToEncode = s;
+  delete[] data;
 
   std::cout << "Calculating frequencies..." << std::endl;
   calculateFrequencies();
@@ -50,8 +51,6 @@ void JuuhCode::encodeFile(const std::string &input, const std::string &output) {
   }
 
   outputFile.close();
-
-  delete[] data;
 }
 
 void JuuhCode::decodeFile(const std::string &input, const std::string &output) {
@@ -59,32 +58,35 @@ void JuuhCode::decodeFile(const std::string &input, const std::string &output) {
   char *data;
   std::ifstream file(input, std::ios::binary | std::ios::in | std::ios::ate);
 
-  if (file.is_open()) {
-    size = file.tellg();
-    data = new char[size];
-    file.seekg(0, std::ios::beg);
-    file.read(data, size);
-    file.close();
-
-    size_t fileSize = static_cast<size_t>(size);
-
-    // convert bytes to bits
-    for (size_t k = 0; k < fileSize; ++k) {
-
-      char c = data[k];
-
-      uint8_t byte = static_cast<uint8_t>(c);
-
-      size_t shiftCount = 7;
-
-      do {
-        bool bit = ((byte >> shiftCount) & 1);
-        bits.push_back(bit);
-      } while (shiftCount-- != 0);
-    }
-
-    delete[] data;
+  if (!file.is_open()) {
+    std::cout << "failed to open" << std::endl;
+    return;
   }
+
+  size = file.tellg();
+  data = new char[size];
+  file.seekg(0, std::ios::beg);
+  file.read(data, size);
+  file.close();
+
+  size_t fileSize = static_cast<size_t>(size);
+
+  // convert bytes to bits
+  for (size_t k = 0; k < fileSize; ++k) {
+
+    char c = data[k];
+
+    uint8_t byte = static_cast<uint8_t>(c);
+
+    size_t shiftCount = 7;
+
+    do {
+      bool bit = ((byte >> shiftCount) & 1);
+      bits.push_back(bit);
+    } while (shiftCount-- != 0);
+  }
+
+  delete[] data;
 
   Node *juuh = readNode();
 
