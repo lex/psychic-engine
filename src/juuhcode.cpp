@@ -1,5 +1,6 @@
 #include "juuhcode.hpp"
 #include "juuhqueue.hpp"
+#include "juuhvector.hpp"
 
 JuuhCode::JuuhCode() {}
 
@@ -35,13 +36,16 @@ void JuuhCode::encodeFile(const std::string &input, const std::string &output) {
 
   // create the huffman code from that tree
   std::cout << "Generating Huffman code..." << std::endl;
-  std::vector<bool> v;
+  // std::vector<bool> v;
+  JuuhVector<bool> v;
   generateHuffmanCode(root, v);
 
-  // encode the tree data as in http://stackoverflow.com/questions/759707/efficient-way-of-storing-huffman-tree
-  std::vector<bool> b;
+  // encode the tree data as in
+  // http://stackoverflow.com/questions/759707/efficient-way-of-storing-huffman-tree
+  JuuhVector<bool> b;
+  // std::vector<bool> b;
   encode(root, b);
-  bits = b;
+  bits = JuuhVector<bool>(b);
 
   // append the encoded string itself
   appendEncodedBits();
@@ -53,7 +57,8 @@ void JuuhCode::encodeFile(const std::string &input, const std::string &output) {
   std::ofstream outputFile;
   outputFile.open(output, std::ofstream::out);
 
-  for (const uint8_t &byte : bytes) {
+  for (size_t i = 0; i < bytes.size(); ++i) {
+    const uint8_t byte = bytes[i];
     outputFile << byte;
   }
 
@@ -97,7 +102,7 @@ void JuuhCode::decodeFile(const std::string &input, const std::string &output) {
   delete[] data;
 
   // rebuild the tree
-  Node *decodedRoot = readNode();
+  Node *decodedRoot = rebuildTree();
 
   std::string s = "";
 
@@ -163,7 +168,7 @@ void JuuhCode::createTree() {
 
 // recursively generate huffman coding
 void JuuhCode::generateHuffmanCode(const Node *node,
-                                   const std::vector<bool> &code) {
+                                   const JuuhVector<bool> &code) {
   // assign a code
   if (!node->left && !node->right) {
     size_t index = static_cast<size_t>(node->character);
@@ -171,10 +176,10 @@ void JuuhCode::generateHuffmanCode(const Node *node,
     return;
   }
 
-  auto left = code;
+  auto left = JuuhVector<bool>(code);
   left.push_back(false);
 
-  auto right = code;
+  auto right = JuuhVector<bool>(code);
   right.push_back(true);
 
   generateHuffmanCode(node->left, left);
@@ -182,7 +187,7 @@ void JuuhCode::generateHuffmanCode(const Node *node,
 }
 
 // encode the codes and the string into bits for packaging into bytes
-void JuuhCode::encode(const Node *node, std::vector<bool> &v) {
+void JuuhCode::encode(const Node *node, JuuhVector<bool> &v) {
   if (!node->left) {
     // this is the code for this byte
     v.push_back(true);
@@ -209,21 +214,25 @@ void JuuhCode::encode(const Node *node, std::vector<bool> &v) {
 
 // convert bits to bytes for output purposes
 void JuuhCode::bitsToBytes() {
-  for (auto it = bits.begin(); it != bits.end();) {
-    uint8_t byte = 0;
+  size_t bitCount = 0;
+  uint8_t byte = 0;
 
-    for (size_t i = 0; i < 8; ++i) {
-      // shift the bit to the right position and or it in place
-      byte |= (*it & 1) << (7 - i);
-      ++it;
+  for (size_t i = 0; i < bits.size(); ++i) {
+    // shift the bit to the right position and or it in place
+    // byte |= (*it & 1) << (7 - i);
+    byte |= (bits[i] & 1) << (7 - bitCount);
+    ++bitCount;
 
-      // do we need to shift more?
-      if (it == bits.end()) {
-        break;
-      }
+    // is our byte ready?
+    if (bitCount == 8) {
+      bytes.push_back(byte);
+      byte = 0;
+      bitCount = 0;
     }
 
-    bytes.push_back(byte);
+    if (i == bits.size() - 1) {
+      break;
+    }
   }
 }
 
@@ -232,8 +241,9 @@ void JuuhCode::appendEncodedBits() {
     uint8_t i = static_cast<uint8_t>(c);
     auto code = codes[i];
 
-    for (const bool &b : code) {
-      bits.push_back(b);
+    // for (const bool &b : code) {
+    for (size_t index = 0; index < code.size(); ++index) {
+      bits.push_back(code[index]);
     }
   }
 }
@@ -255,17 +265,18 @@ uint8_t JuuhCode::getByte() {
   return byte;
 }
 
-Node *JuuhCode::readNode() {
+Node *JuuhCode::rebuildTree() {
   if (getBit()) {
     return new Node(0, getByte());
   }
 
-  Node *left = readNode();
-  Node *right = readNode();
+  Node *left = rebuildTree();
+  Node *right = rebuildTree();
 
   return new Node(left, right);
 }
 
+// find a character for the current code
 char JuuhCode::getCharacter(const Node *n) {
   if (!n->left && !n->right) {
     // it's a leaf, get the character

@@ -7,6 +7,7 @@
 
 #include "../src/juuhcode.hpp"
 #include "../src/juuhqueue.hpp"
+#include "../src/juuhvector.hpp"
 
 // test that adding something to the priorityqueue increases its size
 BOOST_AUTO_TEST_CASE(TestForCorrectQueuePushing) {
@@ -87,4 +88,34 @@ BOOST_AUTO_TEST_CASE(TestForCorrectStringEncodingAndDecodingWithEmojis) {
   std::getline(f, line);
 
   BOOST_CHECK_EQUAL(line, expected);
+}
+
+BOOST_AUTO_TEST_CASE(TestJuuhVectorPushing) {
+
+  auto v = JuuhVector<uint8_t>();
+  v.push_back(1);
+  BOOST_CHECK_EQUAL(v[0], 1);
+
+  v.push_back(2);
+  BOOST_CHECK_EQUAL(v[1], 2);
+}
+
+BOOST_AUTO_TEST_CASE(TestJuuhVectorCopying) {
+
+  auto v = JuuhVector<uint8_t>();
+  v.push_back(1);
+
+  auto vv = JuuhVector<uint8_t>(v);
+  BOOST_CHECK_EQUAL(vv[0], 1);
+}
+
+BOOST_AUTO_TEST_CASE(TestJuuhVectorCopyingContents) {
+
+  auto v = JuuhVector<uint8_t>();
+  v.push_back(1);
+
+  auto vv = JuuhVector<uint8_t>(v);
+  vv[0] = 2;
+  BOOST_CHECK_EQUAL(v[0], 1);
+  BOOST_CHECK_EQUAL(vv[0], 2);
 }

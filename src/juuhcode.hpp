@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "node.hpp"
+#include "juuhvector.hpp"
 
 class JuuhCode {
 public:
@@ -18,15 +19,15 @@ private:
   // encoding stuff
   void calculateFrequencies();
   void createTree();
-  void generateHuffmanCode(const Node *node, const std::vector<bool> &code);
+  void generateHuffmanCode(const Node *node, const JuuhVector<bool> &code);
 
-  void encode(const Node *node, std::vector<bool> &v);
+  void encode(const Node *node, JuuhVector<bool> &v);
   void bitsToBytes();
 
   void appendEncodedBits();
 
   // decoding stuff
-  Node *readNode();
+  Node *rebuildTree();
   bool getBit();
   uint8_t getByte();
 
@@ -37,11 +38,11 @@ private:
   std::string stringToEncode;
 
   // we need room for 256 values, UINT8_MAX is 255
-  std::array<std::vector<bool>, UINT8_MAX + 1> codes;
+  std::array<JuuhVector<bool>, UINT8_MAX + 1> codes;
   std::array<uint64_t, UINT8_MAX + 1> frequencies = {{0}};
 
-  std::vector<bool> bits;
-  std::vector<uint8_t> bytes;
+  JuuhVector<bool> bits;
+  JuuhVector<uint8_t> bytes;
 
   Node *root = 0;
 };

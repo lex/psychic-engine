@@ -36,6 +36,9 @@ option getOptionForArgument(const std::string &argument) {
   return UNDEFINED;
 }
 
+#include "juuhvector.hpp"
+#include <cstdint>
+
 int main(int argc, char *argv[]) {
   if (argc < 5) {
     // if there are not enough arguments
